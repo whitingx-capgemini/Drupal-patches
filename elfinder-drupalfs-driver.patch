@@ -1,0 +1,37 @@
+diff --git a/elfinder.drupalfs.driver.inc b/elfinder.drupalfs.driver.inc
+index d4b58f2..f7a1865 100644
+--- a/elfinder.drupalfs.driver.inc
++++ b/elfinder.drupalfs.driver.inc
+@@ -230,21 +230,8 @@ class elFinderVolumeDrupal extends elFinderVolumeLocalFileSystem {
+    * @return bool|string
+    * @author Dmitry (dio) Levashov, Alexey Sukhotin
+    * */
+-  protected function _save($fp, $dir, $name, $stat) {
+-    $tmpname = $name;
+-		
+-		$bu_ret = module_invoke_all('elfinder_beforeupload', array('name' => $name, 'dir' => $dir, 'stat' => $stat ));
+-		
+-		if (isset($bu_ret)) {
+-			if (!is_array($bu_ret)) {
+-				$bu_ret = array($bu_ret);
+-			}
+-      
+-      $tmpname = end($bu_ret);
+-
+-		}
+-	
+-    $path = $dir . DIRECTORY_SEPARATOR . (!empty($tmpname) ? $tmpname : $name);
++  protected function _save($fp, $dir, $name, $mime, $w, $h) {
++    $path = $dir . DIRECTORY_SEPARATOR . $name;
+ 
+     if (!$this->CheckUserQuota()) {
+       return FALSE;
+@@ -309,6 +296,8 @@ class elFinderVolumeDrupal extends elFinderVolumeLocalFileSystem {
+ 
+     $file = $this->_drupalfileobject($path);
+ 
++    // drupal_set_message('file=<pre>'.var_export($file,true).'</pre>','warning');
++
+     if ($file->fid) {
+       $owneraccount = user_load($file->uid);
+ 
